@@ -60,16 +60,16 @@
                                 "unit": "B",
                                 "value": 512
                             },
-                            "unit": "B",
-                            "value": 41873833984
+                            "unit": "GiB",
+                            "value": 35
                         },
                         "start": {
                             "sector_size": {
                                 "unit": "B",
                                 "value": 512
                             },
-                            "unit": "B",
-                            "value": 1074790400
+                            "unit": "GiB",
+                            "value": 1
                         },
                         "status": "create",
                         "type": "primary"
