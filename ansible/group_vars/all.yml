@@ -1,0 +1,17 @@
+---
+server_user: mbutler
+
+base_packages:
+  - base-devel
+  - rsync
+  - smartmontools
+  - tailscale
+  - tmux
+  - vim
+  - wget
+  - zsh
+
+base_dirs:
+  - /data
+  - /data/media
+  - /data/downloads

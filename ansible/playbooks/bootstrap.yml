@@ -1,0 +1,50 @@
+---
+- name: Bootstrap loki
+  hosts: localhost
+  become: true
+  vars_files:
+    - "{{ playbook_dir }}/../../ansible/secrets.yml"
+
+  tasks:
+    - name: Install base packages
+      community.general.pacman:
+        name: "{{ base_packages }}"
+        state: present
+        update_cache: true
+
+    - name: Set default shell to zsh for {{ server_user }}
+      user:
+        name: "{{ server_user }}"
+        shell: /bin/zsh
+
+    - name: Enable and start tailscaled
+      systemd:
+        name: tailscaled
+        enabled: true
+        state: started
+
+    - name: Authenticate Tailscale
+      command: tailscale up --authkey={{ tailscale_auth_key }}
+      changed_when: false
+
+    - name: Create base directory structure
+      file:
+        path: "{{ item }}"
+        state: directory
+        owner: "{{ server_user }}"
+        group: "{{ server_user }}"
+        mode: "0755"
+      loop: "{{ base_dirs }}"
+
+    - name: Disable root SSH login
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: "^#?PermitRootLogin"
+        line: "PermitRootLogin no"
+      notify: Restart sshd
+
+  handlers:
+    - name: Restart sshd
+      systemd:
+        name: sshd
+        state: restarted
