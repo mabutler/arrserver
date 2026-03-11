@@ -34,12 +34,30 @@ Target machine hostname: **loki**
 - Config files: `arch/configuration.json`, `arch/credentials.json`
 - Bootstrap command (from README): one `archinstall --config-url ...` command — that's the only manual step
 - **Bootloader**: systemd-boot (from config — use Arch defaults, don't second-guess)
-- **Filesystem**: ext4 on `/dev/sda`
+- **Filesystem**: ext4 on OS SSD
 - **Swap**: enabled (zstd compression)
 - **Network**: NetworkManager
 - **Timezone**: America/New_York
 - **Locale**: en_US.UTF-8
 - **User**: `mbutler` (sudo)
+
+### Drive layout
+The machine has multiple drives with distinct roles:
+
+| Role | Count | How identified |
+|------|-------|---------------|
+| OS (SSD) | 1 | `/dev/disk/by-id/` in archinstall bare metal config |
+| Data drives | 3 | UUID in Ansible vars — managed by mergerfs |
+| Parity drive | 1 | UUID in Ansible vars — managed by snapraid |
+
+**Safety rule**: archinstall config only ever references the OS drive. Data/parity drives are never touched by archinstall.
+
+**Bare metal vs VM**:
+- `arch/configuration.json` — bare metal config, targets OS SSD by `/dev/disk/by-id/` (populated in Phase 1 once drive ID is known)
+- `arch/configuration.vm.json` — VM config, targets `/dev/sda` or `/dev/vda`; data drive setup is skipped or mocked
+- README has a command for each target
+
+**mergerfs + snapraid**: installed and configured by Ansible in Phase 3. Drives referenced by UUID so they're always mounted correctly regardless of enumeration order.
 
 ### Base packages installed at archinstall time
 Minimum needed to bootstrap Ansible: `git`, `curl` (or `wget`)
@@ -89,7 +107,7 @@ Extras: None (Lidarr, Readarr, Bazarr are out of scope for now)
 - **Be opinionated where stated** — decisions recorded above are firm unless explicitly revisited
 - All config as code — nothing manual that isn't captured in this repo
 - Secrets (passwords, API keys, Tailscale auth key) handled via a secrets approach TBD in Phase 2 (e.g., Ansible Vault, environment file not committed)
-- `/dev/sda` is the current disk in config — may need to parameterize if hardware changes
+- Drive identification: OS drive by `/dev/disk/by-id/`, data/parity drives by UUID — never by `/dev/sdX` enumeration order
 
 ---
 
@@ -98,7 +116,8 @@ Extras: None (Lidarr, Readarr, Bazarr are out of scope for now)
 ```
 arrserver/
 ├── arch/
-│   ├── configuration.json      # archinstall OS config
+│   ├── configuration.json      # archinstall config — bare metal (by-id disk reference)
+│   ├── configuration.vm.json   # archinstall config — VM (/dev/sda or /dev/vda)
 │   └── credentials.json        # archinstall user config
 ├── ansible/
 │   ├── inventory/
@@ -132,7 +151,8 @@ Deliverables:
 
 Notes:
 - Already well started; `configuration.json` is functional
-- Disk is currently hardcoded to `/dev/sda` — acceptable for now
+- Need to identify OS SSD's `/dev/disk/by-id/` path and update bare metal config
+- Create `configuration.vm.json` for VM testing
 
 ### Phase 2 — Post-Install Bootstrap & Automation
 Goal: After first boot, one command gets the machine fully configured.
@@ -143,13 +163,16 @@ Deliverables:
 - Bootstrap playbook: Tailscale auth, Docker daemon config, directory structure, SSH hardening
 - Secrets strategy defined (Ansible Vault or `.env` file pattern)
 
-### Phase 3 — File Sharing & Storage Layout
-Goal: Completed downloads from the other machine land on loki in the right place.
+### Phase 3 — Storage Layout & File Sharing
+Goal: Data drives mounted and pooled; completed downloads land on loki in the right place.
 
 Deliverables:
+- mergerfs pool across 3 data drives, snapraid parity configured
+- Drives referenced by UUID in Ansible vars (never by `/dev/sdX`)
 - Storage directory structure defined (`/data/media`, `/data/downloads`, etc.)
-- File transfer method chosen and configured
+- File transfer method chosen and configured (NFS, Samba, rsync over SSH, or Syncthing)
 - Permissions set correctly for Docker containers (PUID/PGID)
+- VM mode: skip or stub data drive setup
 
 ### Phase 4 — Arr Stack
 Goal: Sonarr, Radarr, Prowlarr running in Docker Compose, connected to each other and to the file share.
