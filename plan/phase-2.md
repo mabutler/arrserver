@@ -12,7 +12,7 @@ After first boot, SSH in and run one command. Ansible takes it from there — pa
 ```
 First boot
   → SSH in as mbutler
-  → Run: bash <(curl -s https://raw.githubusercontent.com/mabutler/arrserver/refs/heads/main/scripts/bootstrap.sh)
+  → Run: curl -s https://raw.githubusercontent.com/mabutler/arrserver/refs/heads/main/scripts/bootstrap.sh | sudo bash
   → Script: installs ansible + git, clones repo, runs playbook
   → Playbook: packages, Tailscale, Docker, dirs, SSH hardening
   → Done

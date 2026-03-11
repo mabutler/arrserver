@@ -23,7 +23,7 @@ Default user password is `password` — change it after first boot.
 After reboot, SSH in as `mbutler` and run:
 
 ```bash
-bash <(curl -s https://raw.githubusercontent.com/mabutler/arrserver/refs/heads/main/scripts/bootstrap.sh)
+curl -s https://raw.githubusercontent.com/mabutler/arrserver/refs/heads/main/scripts/bootstrap.sh | sudo bash
 ```
 
 This installs Ansible, clones the repo to `/opt/arrserver`, and runs the bootstrap playbook. You'll be prompted to fill in `secrets.yml` (Tailscale auth key) before it proceeds.

@@ -4,8 +4,12 @@ set -e
 REPO_URL="https://github.com/mabutler/arrserver"
 REPO_DIR="/opt/arrserver"
 
+echo "==> Updating keyring and system..."
+pacman -Sy --noconfirm archlinux-keyring
+pacman -Syu --noconfirm
+
 echo "==> Installing Ansible..."
-pacman -Sy --noconfirm ansible
+pacman -S --noconfirm ansible
 
 echo "==> Installing Ansible collections..."
 ansible-galaxy collection install community.general
