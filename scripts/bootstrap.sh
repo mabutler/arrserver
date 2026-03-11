@@ -4,6 +4,10 @@ set -e
 REPO_URL="https://github.com/mabutler/arrserver"
 REPO_DIR="/opt/arrserver"
 
+echo "==> Initializing pacman keyring..."
+pacman-key --init
+pacman-key --populate archlinux
+
 echo "==> Updating keyring and system..."
 pacman -Sy --noconfirm archlinux-keyring
 pacman -Syu --noconfirm

@@ -2,7 +2,6 @@
 server_user: mbutler
 
 base_packages:
-  - base-devel
   - rsync
   - smartmontools
   - tailscale

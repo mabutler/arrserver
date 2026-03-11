@@ -12,6 +12,10 @@
         state: present
         update_cache: true
 
+    - name: Install base-devel group
+      ansible.builtin.command: pacman -S --noconfirm --needed base-devel
+      changed_when: false
+
     - name: Set default shell to zsh for {{ server_user }}
       user:
         name: "{{ server_user }}"
