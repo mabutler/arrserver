@@ -21,12 +21,18 @@ else
     echo "==> Ansible already installed, skipping..."
 fi
 
-echo ""
-echo "==> Before continuing, fill in your secrets:"
-echo "    cp $REPO_DIR/ansible/secrets.yml.example $REPO_DIR/ansible/secrets.yml"
-echo "    vim $REPO_DIR/ansible/secrets.yml"
-echo ""
-read -rp "Press Enter when secrets.yml is ready..." < /dev/tty
+SECRETS_FILE="$REPO_DIR/ansible/secrets.yml"
+if [[ ! -f "$SECRETS_FILE" ]]; then
+    echo ""
+    echo "==> Enter secrets (input will be hidden):"
+    read -rsp "    Tailscale auth key: " tailscale_auth_key < /dev/tty
+    echo ""
+    cat > "$SECRETS_FILE" <<EOF
+---
+tailscale_auth_key: "${tailscale_auth_key}"
+EOF
+    echo "==> secrets.yml written."
+fi
 
 echo "==> Running bootstrap playbook..."
 ansible-playbook "$REPO_DIR/ansible/playbooks/bootstrap.yml" \
