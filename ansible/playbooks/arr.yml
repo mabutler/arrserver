@@ -4,6 +4,12 @@
   become: true
 
   tasks:
+    - name: Enable and start Docker
+      systemd:
+        name: docker
+        enabled: true
+        state: started
+
     - name: Create arr config directories
       file:
         path: "/opt/arrconfig/{{ item }}"
@@ -18,7 +24,7 @@
 
     - name: Copy config templates (skip if config already exists)
       copy:
-        src: "/opt/arrserver/config-templates/{{ item }}/config.xml"
+        src: "{{ playbook_dir }}/../../config-templates/{{ item }}/config.xml"
         dest: "/opt/arrconfig/{{ item }}/config.xml"
         owner: "{{ server_user }}"
         group: "{{ server_user }}"

@@ -44,5 +44,10 @@ ansible-playbook "$REPO_DIR/ansible/playbooks/bootstrap.yml" \
     -i "$REPO_DIR/ansible/inventory/hosts.yml" \
     --ask-become-pass
 
+echo "==> Deploying arr stack..."
+ansible-playbook "$REPO_DIR/ansible/playbooks/arr.yml" \
+    -i "$REPO_DIR/ansible/inventory/hosts.yml" \
+    --ask-become-pass
+
 echo ""
 echo "==> Bootstrap complete. loki is ready."
