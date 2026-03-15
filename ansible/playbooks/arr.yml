@@ -1,0 +1,35 @@
+---
+- name: Deploy arr stack
+  hosts: localhost
+  become: true
+
+  tasks:
+    - name: Create arr config directories
+      file:
+        path: "/opt/arrconfig/{{ item }}"
+        state: directory
+        owner: "{{ server_user }}"
+        group: "{{ server_user }}"
+        mode: "0755"
+      loop:
+        - sonarr
+        - radarr
+        - prowlarr
+
+    - name: Copy config templates (skip if config already exists)
+      copy:
+        src: "/opt/arrserver/config-templates/{{ item }}/config.xml"
+        dest: "/opt/arrconfig/{{ item }}/config.xml"
+        owner: "{{ server_user }}"
+        group: "{{ server_user }}"
+        mode: "0644"
+        force: false
+      loop:
+        - sonarr
+        - radarr
+        - prowlarr
+
+    - name: Start arr stack
+      community.docker.docker_compose_v2:
+        project_src: /opt/arrserver/docker
+        state: present

@@ -16,7 +16,7 @@ if ! command -v ansible-playbook &>/dev/null; then
     pacman -S --noconfirm ansible
 
     echo "==> Installing Ansible collections..."
-    ansible-galaxy collection install community.general
+    ansible-galaxy collection install community.general community.docker
 
     RUNNING_KERNEL=$(uname -r)
     INSTALLED_KERNEL=$(ls /lib/modules/ | sort -V | tail -1)
