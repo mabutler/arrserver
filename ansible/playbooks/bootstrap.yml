@@ -40,6 +40,19 @@
       until: tailscale_result.rc == 0
       changed_when: false
 
+    - name: Clone dotfiles bare repo
+      ansible.builtin.git:
+        repo: https://github.com/mabutler/dotfiles.git
+        dest: "/home/{{ server_user }}/.dotfiles"
+        bare: true
+      become_user: "{{ server_user }}"
+
+    - name: Checkout dotfiles into home directory
+      ansible.builtin.command:
+        cmd: git --git-dir=/home/{{ server_user }}/.dotfiles --work-tree=/home/{{ server_user }} checkout master --force
+      become_user: "{{ server_user }}"
+      changed_when: false
+
     - name: Create base directory structure
       file:
         path: "{{ item }}"
