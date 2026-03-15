@@ -4,19 +4,28 @@ set -e
 REPO_URL="https://github.com/mabutler/arrserver"
 REPO_DIR="/opt/arrserver"
 
-echo "==> Initializing pacman keyring..."
-pacman-key --init
-pacman-key --populate archlinux
+if ! command -v ansible-playbook &>/dev/null; then
+    echo "==> Initializing pacman keyring..."
+    pacman-key --init
+    pacman-key --populate archlinux
 
-echo "==> Updating keyring and system..."
-pacman -Sy --noconfirm archlinux-keyring
-pacman -Syu --noconfirm
+    echo "==> Updating keyring and system..."
+    pacman -Sy --noconfirm archlinux-keyring
+    pacman -Syu --noconfirm
 
-echo "==> Installing Ansible..."
-pacman -S --noconfirm ansible
+    echo "==> Installing Ansible..."
+    pacman -S --noconfirm ansible
 
-echo "==> Installing Ansible collections..."
-ansible-galaxy collection install community.general
+    echo "==> Installing Ansible collections..."
+    ansible-galaxy collection install community.general
+else
+    echo "==> Ansible already installed, skipping..."
+fi
+
+if [ -d "$REPO_DIR" ]; then
+    echo "==> Removing existing $REPO_DIR..."
+    rm -rf "$REPO_DIR"
+fi
 
 echo "==> Cloning repo to $REPO_DIR..."
 git clone "$REPO_URL" "$REPO_DIR"
