@@ -21,6 +21,16 @@
         name: "{{ server_user }}"
         shell: /bin/zsh
 
+    - name: Load tun module
+      community.general.modprobe:
+        name: tun
+        state: present
+
+    - name: Persist tun module on boot
+      copy:
+        content: "tun\n"
+        dest: /etc/modules-load.d/tun.conf
+
     - name: Enable and start tailscaled
       systemd:
         name: tailscaled
