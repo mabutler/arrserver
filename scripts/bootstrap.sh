@@ -1,8 +1,7 @@
 #!/bin/bash
 set -e
 
-REPO_URL="https://github.com/mabutler/arrserver"
-REPO_DIR="/opt/arrserver"
+REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 
 if ! command -v ansible-playbook &>/dev/null; then
     echo "==> Initializing pacman keyring..."
@@ -22,20 +21,12 @@ else
     echo "==> Ansible already installed, skipping..."
 fi
 
-if [ -d "$REPO_DIR" ]; then
-    echo "==> Removing existing $REPO_DIR..."
-    rm -rf "$REPO_DIR"
-fi
-
-echo "==> Cloning repo to $REPO_DIR..."
-git clone "$REPO_URL" "$REPO_DIR"
-
 echo ""
 echo "==> Before continuing, fill in your secrets:"
 echo "    cp $REPO_DIR/ansible/secrets.yml.example $REPO_DIR/ansible/secrets.yml"
 echo "    vim $REPO_DIR/ansible/secrets.yml"
 echo ""
-read -rp "Press Enter when secrets.yml is ready..."
+read -rp "Press Enter when secrets.yml is ready..." < /dev/tty
 
 echo "==> Running bootstrap playbook..."
 ansible-playbook "$REPO_DIR/ansible/playbooks/bootstrap.yml" \
