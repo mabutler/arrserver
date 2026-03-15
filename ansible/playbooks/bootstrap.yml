@@ -27,6 +27,11 @@
         enabled: true
         state: started
 
+    - name: Wait for tailscaled socket
+      wait_for:
+        path: /var/run/tailscale/tailscaled.sock
+        timeout: 15
+
     - name: Authenticate Tailscale
       command: tailscale up --authkey={{ tailscale_auth_key }}
       changed_when: false
