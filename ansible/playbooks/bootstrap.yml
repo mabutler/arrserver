@@ -21,11 +21,6 @@
         name: "{{ server_user }}"
         shell: /bin/zsh
 
-    - name: Load tun module
-      community.general.modprobe:
-        name: tun
-        state: present
-
     - name: Persist tun module on boot
       copy:
         content: "tun\n"

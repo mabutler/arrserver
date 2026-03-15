@@ -17,6 +17,15 @@ if ! command -v ansible-playbook &>/dev/null; then
 
     echo "==> Installing Ansible collections..."
     ansible-galaxy collection install community.general
+
+    RUNNING_KERNEL=$(uname -r)
+    INSTALLED_KERNEL=$(ls /lib/modules/ | sort -V | tail -1)
+    if [[ "$RUNNING_KERNEL" != "$INSTALLED_KERNEL" ]]; then
+        echo ""
+        echo "==> Kernel updated ($RUNNING_KERNEL -> $INSTALLED_KERNEL). Rebooting..."
+        echo "==> After reboot, re-run: sudo bash $REPO_DIR/scripts/bootstrap.sh"
+        reboot
+    fi
 else
     echo "==> Ansible already installed, skipping..."
 fi
