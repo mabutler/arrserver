@@ -38,7 +38,9 @@ echo ""
 read -rp "Press Enter when secrets.yml is ready..."
 
 echo "==> Running bootstrap playbook..."
-ansible-playbook "$REPO_DIR/ansible/playbooks/bootstrap.yml" --ask-become-pass
+ansible-playbook "$REPO_DIR/ansible/playbooks/bootstrap.yml" \
+    -i "$REPO_DIR/ansible/inventory/hosts.yml" \
+    --ask-become-pass
 
 echo ""
 echo "==> Bootstrap complete. loki is ready."
