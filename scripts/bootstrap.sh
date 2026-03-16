@@ -39,6 +39,27 @@ EOF
     echo "==> secrets.yml written."
 fi
 
+ALL_VARS="$REPO_DIR/ansible/inventory/group_vars/all.yml"
+SYNC_KEY_PATH=$(python3 -c "import yaml; print(yaml.safe_load(open('$ALL_VARS'))['sync_ssh_key_path'])" 2>/dev/null)
+SYNC_REMOTE_HOST=$(python3 -c "import yaml; print(yaml.safe_load(open('$ALL_VARS'))['sync_remote_host'])" 2>/dev/null)
+SYNC_REMOTE_USER=$(python3 -c "import yaml; print(yaml.safe_load(open('$ALL_VARS'))['sync_remote_user'])" 2>/dev/null)
+
+if [[ ! -f "$SYNC_KEY_PATH" ]]; then
+    if [[ "$SYNC_REMOTE_HOST" == "PLACEHOLDER" || "$SYNC_REMOTE_USER" == "PLACEHOLDER" ]]; then
+        echo ""
+        echo "==> ERROR: Fill in sync_remote_host and sync_remote_user in all.yml before running bootstrap."
+        exit 1
+    fi
+    echo ""
+    echo "==> Generating SSH keypair for sync..."
+    sudo -u mbutler ssh-keygen -t ed25519 -f "$SYNC_KEY_PATH" -N ""
+    echo ""
+    echo "==> Installing SSH key on remote download server (${SYNC_REMOTE_USER}@${SYNC_REMOTE_HOST})..."
+    echo "    Enter the remote server password when prompted."
+    sudo -u mbutler ssh-copy-id -i "${SYNC_KEY_PATH}.pub" "${SYNC_REMOTE_USER}@${SYNC_REMOTE_HOST}"
+    echo "==> SSH key installed. Password will not be needed again."
+fi
+
 echo "==> Running bootstrap playbook..."
 ansible-playbook "$REPO_DIR/ansible/playbooks/bootstrap.yml" \
     -i "$REPO_DIR/ansible/inventory/hosts.yml" \

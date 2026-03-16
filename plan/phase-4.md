@@ -50,6 +50,6 @@ Some wiring between apps can't be automated — needs to be done in the UIs afte
 
 ## Deliverables
 
-- [ ] `docker/compose.yml` — Sonarr, Radarr, Prowlarr
-- [ ] `ansible/playbooks/arr.yml` — creates config dirs, deploys compose, starts stack
-- [ ] Ansible playbook tested in VM — all three UIs reachable
+- [x] `docker/compose.yml` — Sonarr, Radarr, Prowlarr
+- [x] `ansible/playbooks/arr.yml` — creates config dirs, deploys compose, starts stack
+- [x] Ansible playbook tested in VM — all three UIs reachable
