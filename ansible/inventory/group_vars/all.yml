@@ -14,3 +14,12 @@ base_dirs:
   - /data
   - /data/media
   - /data/downloads
+  - /data/torrents
+
+sync_remote_user: "PLACEHOLDER"
+sync_remote_host: "PLACEHOLDER"
+sync_remote_watch_dir: "PLACEHOLDER"       # path on remote where torrent client watches for .torrent files
+sync_remote_downloads_dir: "PLACEHOLDER"   # path on remote where torrent client puts completed files
+sync_bwlimit_kbps: 3000                    # ~3 MB/s, leaves ~26 Mb/s headroom on a 50 Mb/s connection
+sync_interval: "5min"                      # time between sync runs (measured from when previous run finishes)
+sync_ssh_key_path: "/home/{{ server_user }}/.ssh/id_ed25519_sync"

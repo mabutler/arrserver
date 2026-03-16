@@ -1,0 +1,9 @@
+[Unit]
+Description=Run download pull sync periodically
+
+[Timer]
+OnBootSec=2min
+OnUnitActiveSec={{ sync_interval }}
+
+[Install]
+WantedBy=timers.target

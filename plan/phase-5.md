@@ -62,5 +62,5 @@ After the container starts, configure libraries in the Jellyfin UI:
 
 - [x] Add Jellyfin service to `docker/compose.yml`
 - [x] Add Ansible task in `ansible/playbooks/arr.yml` to create `/opt/arrconfig/jellyfin` and restart compose
-- [ ] Jellyfin UI reachable on LAN and over Tailscale
-- [ ] Libraries configured and media visible (manual — done in Jellyfin UI after first run)
+- [x] Jellyfin UI reachable on LAN and over Tailscale
+- [ ] Libraries configured and media visible (manual — done in Jellyfin UI after first run, deferred until Phase 3 storage is set up)
