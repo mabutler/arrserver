@@ -26,6 +26,7 @@
         - sonarr
         - radarr
         - prowlarr
+        - jellyfin
 
     - name: Copy config templates (skip if config already exists)
       copy:

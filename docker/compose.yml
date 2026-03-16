@@ -48,6 +48,22 @@ services:
       - arr-net
     restart: unless-stopped
 
+  jellyfin:
+    image: lscr.io/linuxserver/jellyfin:latest
+    container_name: jellyfin
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - /opt/arrconfig/jellyfin:/config
+      - /data/media:/data/media:ro
+    ports:
+      - 8096:8096
+    networks:
+      - arr-net
+    restart: unless-stopped
+
 networks:
   arr-net:
     driver: bridge
