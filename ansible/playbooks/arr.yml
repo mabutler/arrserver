@@ -26,6 +26,7 @@
         - sonarr
         - radarr
         - prowlarr
+        - homarr
 
     - name: Copy config templates (skip if config already exists)
       copy:

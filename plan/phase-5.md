@@ -5,7 +5,7 @@
 
 ## Goal
 
-A media server running on loki that can browse and stream the library managed by the arr stack.
+A media server and dashboard running on loki — browse and stream the library, and access all services from one place.
 
 ## Decision: Jellyfin
 

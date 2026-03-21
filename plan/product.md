@@ -20,10 +20,11 @@ Target machine hostname: **loki**
 |-------|------|--------|
 | 1 | OS Installation (archinstall) | In progress |
 | 2 | Post-Install Bootstrap & Automation | Not started |
-| 3 | File Sharing & Storage Layout | Not started |
-| 4 | Arr Stack (Docker Compose) | Not started |
-| 5 | Media Server | Not started |
-| 6+ | Future apps | TBD |
+| 3 | Storage Layout & File Transfer | Partial (transfer done; storage requires bare metal) |
+| 4 | Arr Stack (Docker Compose) | Done (VM tested) |
+| 5 | Media Server & Dashboard | Done (VM tested) |
+| 6 | Backups | Not started |
+| 7 | Remote Access & Hardening | Not started |
 
 ---
 
@@ -87,13 +88,18 @@ Extras: None (Lidarr, Readarr, Bazarr are out of scope for now)
 
 ### Download / File Transfer
 - Downloads do **not** happen on this server
-- A separate machine handles torrenting; completed files are transferred to loki
-- Transfer method TBD (NFS, Samba, rsync over SSH, or Syncthing — decide in Phase 3)
-- Arr apps on loki will monitor a local directory where completed files land
+- A separate machine handles torrenting via qBittorrent
+- Transfer method: **rsync over SSH** on systemd timers
+  - Torrent files pushed from loki → remote watch dir (5min timer)
+  - Completed downloads pulled from remote → `/data/downloads` (5min timer)
+- Arr apps monitor `/data/downloads` and import to `/data/media` via hardlinks (mergerfs fallback: copy)
+- `--ignore-existing` and `--partial` flags on pull rsync prevent re-downloads and resume interrupted transfers
 
 ### Media Server
-- TBD — likely Jellyfin (open source, no account required)
-- Decide and document in Phase 5
+- **Jellyfin** — open source, no account required, self-hosted
+
+### Dashboard
+- **Homarr** — launcher/dashboard linking to all services (port 7575)
 
 ### Tailscale
 - Already in base packages; provides VPN access to the server
@@ -182,12 +188,24 @@ Deliverables:
 - Apps configured and talking to each other
 - Ansible playbook deploys and manages the stack
 
-### Phase 5 — Media Server
-Goal: Browse and stream media from loki.
+### Phase 5 — Media Server & Dashboard
+Goal: Browse and stream media from loki; access all services from one place.
 
 Deliverables:
-- Media server chosen (likely Jellyfin) and added to compose
-- Integrated with arr stack library paths
+- Jellyfin added to compose, integrated with arr stack library paths
+- Homarr dashboard added to compose, linking to all services
 
-### Phase 6+ — Future Apps
-TBD. Extend the Ansible + Docker Compose pattern.
+### Phase 6 — Backups
+Goal: Automated, scheduled backups of all persistent state.
+
+Deliverables:
+- Restic backing up `/opt/arrconfig` (daily) and `/data/media` (weekly)
+- Systemd timers, restore procedure documented
+
+### Phase 7 — Remote Access & Hardening
+Goal: Clean URLs for all services, SSL termination.
+
+Deliverables:
+- Nginx Proxy Manager in compose
+- Proxy hosts configured for all services
+- SSL strategy decided and implemented

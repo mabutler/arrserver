@@ -64,6 +64,22 @@ services:
       - arr-net
     restart: unless-stopped
 
+  homarr:
+    image: ghcr.io/ajnart/homarr:latest
+    container_name: homarr
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/New_York
+    volumes:
+      - /opt/arrconfig/homarr:/app/data/configs
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    ports:
+      - 7575:7575
+    networks:
+      - arr-net
+    restart: unless-stopped
+
 networks:
   arr-net:
     driver: bridge
