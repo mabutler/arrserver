@@ -9,10 +9,18 @@
         name: mergerfs
         state: present
 
-    - name: Install snapraid (AUR)
-      community.general.aur:
-        name: snapraid
-        state: present
+    - name: Clone snapraid from AUR
+      ansible.builtin.git:
+        repo: https://aur.archlinux.org/snapraid.git
+        dest: /tmp/snapraid-aur
+        version: master
+      become_user: "{{ server_user }}"
+
+    - name: Build and install snapraid
+      ansible.builtin.shell:
+        cmd: makepkg -si --noconfirm
+        chdir: /tmp/snapraid-aur
+        creates: /usr/bin/snapraid
       become_user: "{{ server_user }}"
 
     - name: Create data drive mount points

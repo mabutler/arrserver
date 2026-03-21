@@ -24,7 +24,7 @@ if [[ "$RUNNING_KERNEL" != "$INSTALLED_KERNEL" ]]; then
 fi
 
 echo "==> Installing Ansible collections..."
-ansible-galaxy collection install community.general community.docker
+sudo -u mbutler ansible-galaxy collection install community.general community.docker
 
 SECRETS_FILE="$REPO_DIR/ansible/secrets.yml"
 if [[ ! -f "$SECRETS_FILE" ]]; then
