@@ -3,7 +3,7 @@
     "archinstall-language": "English",
     "auth_config": {},
     "bootloader_config": {
-        "bootloader": "Systemd-boot",
+        "bootloader": "Grub",
         "removable": false,
         "uki": false
     },
