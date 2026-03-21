@@ -1,0 +1,15 @@
+[Unit]
+Description=mergerfs /data pool
+After=local-fs.target {% for drive in storage_drives %}mnt-{{ drive.mount | basename }}.mount {% endfor %}
+
+Requires={% for drive in storage_drives %}mnt-{{ drive.mount | basename }}.mount {% endfor %}
+
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/mergerfs {{ storage_drives | map(attribute='mount') | join(':') }} /data -o allow_other,category.create=mfs,moveonenospc=1
+ExecStop=/usr/bin/fusermount -u /data
+
+[Install]
+WantedBy=multi-user.target

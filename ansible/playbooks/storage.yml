@@ -77,14 +77,6 @@
         opts: defaults,nofail
         state: mounted
 
-    - name: Add mergerfs to fstab
-      ansible.posix.mount:
-        path: /data
-        src: "{{ storage_drives | map(attribute='mount') | join(':') }}"
-        fstype: fuse.mergerfs
-        opts: "defaults,allow_other,category.create=mfs,moveonenospc=1,nofail"
-        state: present
-
     - name: Check if mergerfs is mounted at /data
       ansible.builtin.command: findmnt -t fuse.mergerfs /data
       register: mergerfs_mounted
@@ -99,6 +91,18 @@
           /data
           -o allow_other,category.create=mfs,moveonenospc=1
       when: mergerfs_mounted.rc != 0
+
+    - name: Deploy mergerfs systemd service
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/mergerfs.service.j2"
+        dest: /etc/systemd/system/mergerfs.service
+        mode: "0644"
+      notify: Reload systemd
+
+    - name: Enable mergerfs service
+      ansible.builtin.systemd:
+        name: mergerfs.service
+        enabled: true
 
     - name: Create snapraid content dir
       ansible.builtin.file:
