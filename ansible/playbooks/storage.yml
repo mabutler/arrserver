@@ -42,6 +42,11 @@
         cmd: pacman -U --noconfirm /tmp/snapraid-aur/*.pkg.tar.zst
         creates: /usr/bin/snapraid
 
+    - name: Install fuse3
+      community.general.pacman:
+        name: fuse3
+        state: present
+
     - name: Create data drive mount points
       ansible.builtin.file:
         path: "{{ item.mount }}"
@@ -72,13 +77,22 @@
         opts: defaults,nofail
         state: mounted
 
-    - name: Mount mergerfs pool at /data
+    - name: Add mergerfs to fstab
       ansible.posix.mount:
         path: /data
         src: "{{ storage_drives | map(attribute='mount') | join(':') }}"
         fstype: fuse.mergerfs
-        opts: "defaults,allow_other,nofail"
-        state: mounted
+        opts: "defaults,allow_other,category.create=mfs,moveonenospc=1,nofail"
+        state: present
+
+    - name: Mount mergerfs pool at /data
+      ansible.builtin.shell:
+        cmd: >
+          mergerfs
+          {{ storage_drives | map(attribute='mount') | join(':') }}
+          /data
+          -o allow_other,category.create=mfs,moveonenospc=1
+        creates: /data/media
 
     - name: Create snapraid content dir
       ansible.builtin.file:
