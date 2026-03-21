@@ -4,10 +4,19 @@
   become: true
 
   tasks:
-    - name: Install mergerfs
-      community.general.pacman:
-        name: mergerfs
-        state: present
+    - name: Clone mergerfs from AUR
+      ansible.builtin.git:
+        repo: https://aur.archlinux.org/mergerfs.git
+        dest: /tmp/mergerfs-aur
+        version: master
+      become_user: "{{ server_user }}"
+
+    - name: Build and install mergerfs
+      ansible.builtin.shell:
+        cmd: makepkg -si --noconfirm
+        chdir: /tmp/mergerfs-aur
+        creates: /usr/bin/mergerfs
+      become_user: "{{ server_user }}"
 
     - name: Clone snapraid from AUR
       ansible.builtin.git:
