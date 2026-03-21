@@ -1,0 +1,21 @@
+# snapraid configuration
+
+# Parity file — must be on the parity drive, outside the mergerfs pool
+parity {{ parity_drive.mount }}/snapraid.parity
+
+# Content files — one on the OS drive (for recovery) + one per data drive
+content /var/snapraid/content
+{% for drive in storage_drives %}
+content {{ drive.mount }}/snapraid.content
+{% endfor %}
+
+# Data drives
+{% for drive in storage_drives %}
+data d{{ loop.index }} {{ drive.mount }}
+{% endfor %}
+
+# Exclude transient files
+exclude *.unrecoverable
+exclude /tmp/
+exclude /lost+found/
+exclude .DS_Store

@@ -16,6 +16,18 @@ base_dirs:
   - /data/downloads
   - /data/torrents
 
+storage_drives:
+  - uuid: "5e0af105-2f47-445c-8103-ee02324da865"
+    mount: /mnt/disk1
+  - uuid: "58e62188-58fb-43a7-b689-f2b9f0138de5"
+    mount: /mnt/disk2
+  - uuid: "32e79be8-a273-4355-a92a-a5bea79f10d5"
+    mount: /mnt/disk3
+
+parity_drive:
+  uuid: "80284ea2-2660-47c8-9ca4-66264d362324"
+  mount: /mnt/parity
+
 sync_remote_user: "unquote1581"
 sync_remote_host: "delia.usbx.me"
 sync_remote_watch_dir: "watch/qbittorrent"       # path on remote where torrent client watches for .torrent files

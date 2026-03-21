@@ -1,0 +1,7 @@
+[Unit]
+Description=Snapraid sync
+After=local-fs.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/snapraid sync

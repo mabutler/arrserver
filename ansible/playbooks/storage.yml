@@ -1,0 +1,91 @@
+---
+- name: Configure storage (mergerfs pool + snapraid parity)
+  hosts: localhost
+  become: true
+
+  tasks:
+    - name: Install mergerfs
+      community.general.pacman:
+        name: mergerfs
+        state: present
+
+    - name: Install snapraid (AUR)
+      community.general.aur:
+        name: snapraid
+        state: present
+      become_user: "{{ server_user }}"
+
+    - name: Create data drive mount points
+      ansible.builtin.file:
+        path: "{{ item.mount }}"
+        state: directory
+        mode: "0755"
+      loop: "{{ storage_drives }}"
+
+    - name: Create parity drive mount point
+      ansible.builtin.file:
+        path: "{{ parity_drive.mount }}"
+        state: directory
+        mode: "0755"
+
+    - name: Mount data drives (fstab)
+      ansible.posix.mount:
+        path: "{{ item.mount }}"
+        src: "UUID={{ item.uuid }}"
+        fstype: xfs
+        opts: defaults,nofail
+        state: mounted
+      loop: "{{ storage_drives }}"
+
+    - name: Mount parity drive (fstab)
+      ansible.posix.mount:
+        path: "{{ parity_drive.mount }}"
+        src: "UUID={{ parity_drive.uuid }}"
+        fstype: xfs
+        opts: defaults,nofail
+        state: mounted
+
+    - name: Mount mergerfs pool at /data
+      ansible.posix.mount:
+        path: /data
+        src: "{{ storage_drives | map(attribute='mount') | join(':') }}"
+        fstype: fuse.mergerfs
+        opts: "defaults,allow_other,use_ino,moveonenospc=1,dropcacheonclose=1,category.create=mfs,nofail"
+        state: mounted
+
+    - name: Create snapraid content dir
+      ansible.builtin.file:
+        path: /var/snapraid
+        state: directory
+        mode: "0755"
+
+    - name: Deploy snapraid config
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/snapraid.conf.j2"
+        dest: /etc/snapraid.conf
+        mode: "0644"
+
+    - name: Deploy snapraid sync systemd service
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/snapraid-sync.service.j2"
+        dest: /etc/systemd/system/snapraid-sync.service
+        mode: "0644"
+      notify: Reload systemd
+
+    - name: Deploy snapraid sync systemd timer
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../templates/snapraid-sync.timer.j2"
+        dest: /etc/systemd/system/snapraid-sync.timer
+        mode: "0644"
+      notify: Reload systemd
+
+    - name: Enable and start snapraid sync timer
+      ansible.builtin.systemd:
+        name: snapraid-sync.timer
+        enabled: true
+        state: started
+
+  handlers:
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
