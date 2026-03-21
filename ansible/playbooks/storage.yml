@@ -9,28 +9,38 @@
         repo: https://aur.archlinux.org/mergerfs.git
         dest: /tmp/mergerfs-aur
         version: master
-      become_user: "{{ server_user }}"
+      become: false
 
-    - name: Build and install mergerfs
+    - name: Build mergerfs
       ansible.builtin.shell:
-        cmd: makepkg -si --noconfirm
+        cmd: makepkg -s --noconfirm
         chdir: /tmp/mergerfs-aur
         creates: /usr/bin/mergerfs
-      become_user: "{{ server_user }}"
+      become: false
+
+    - name: Install mergerfs package
+      ansible.builtin.shell:
+        cmd: pacman -U --noconfirm /tmp/mergerfs-aur/*.pkg.tar.zst
+        creates: /usr/bin/mergerfs
 
     - name: Clone snapraid from AUR
       ansible.builtin.git:
         repo: https://aur.archlinux.org/snapraid.git
         dest: /tmp/snapraid-aur
         version: master
-      become_user: "{{ server_user }}"
+      become: false
 
-    - name: Build and install snapraid
+    - name: Build snapraid
       ansible.builtin.shell:
-        cmd: makepkg -si --noconfirm
+        cmd: makepkg -s --noconfirm
         chdir: /tmp/snapraid-aur
         creates: /usr/bin/snapraid
-      become_user: "{{ server_user }}"
+      become: false
+
+    - name: Install snapraid package
+      ansible.builtin.shell:
+        cmd: pacman -U --noconfirm /tmp/snapraid-aur/*.pkg.tar.zst
+        creates: /usr/bin/snapraid
 
     - name: Create data drive mount points
       ansible.builtin.file:
