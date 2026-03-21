@@ -13,7 +13,7 @@
 
     - name: Build mergerfs
       ansible.builtin.shell:
-        cmd: makepkg -s --noconfirm
+        cmd: makepkg -sf --noconfirm
         chdir: /tmp/mergerfs-aur
         creates: /usr/bin/mergerfs
       become: false
@@ -32,7 +32,7 @@
 
     - name: Build snapraid
       ansible.builtin.shell:
-        cmd: makepkg -s --noconfirm
+        cmd: makepkg -sf --noconfirm
         chdir: /tmp/snapraid-aur
         creates: /usr/bin/snapraid
       become: false
