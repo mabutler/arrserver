@@ -85,6 +85,12 @@
         opts: "defaults,allow_other,category.create=mfs,moveonenospc=1,nofail"
         state: present
 
+    - name: Check if mergerfs is mounted at /data
+      ansible.builtin.command: findmnt -t fuse.mergerfs /data
+      register: mergerfs_mounted
+      changed_when: false
+      failed_when: false
+
     - name: Mount mergerfs pool at /data
       ansible.builtin.shell:
         cmd: >
@@ -92,7 +98,7 @@
           {{ storage_drives | map(attribute='mount') | join(':') }}
           /data
           -o allow_other,category.create=mfs,moveonenospc=1
-        creates: /data/media
+      when: mergerfs_mounted.rc != 0
 
     - name: Create snapraid content dir
       ansible.builtin.file:
