@@ -77,7 +77,7 @@
         path: /data
         src: "{{ storage_drives | map(attribute='mount') | join(':') }}"
         fstype: fuse.mergerfs
-        opts: "defaults,allow_other,moveonenospc=1,category.create=mfs,nofail"
+        opts: "defaults,allow_other,nofail"
         state: mounted
 
     - name: Create snapraid content dir
