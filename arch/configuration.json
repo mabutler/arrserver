@@ -15,7 +15,7 @@
         "config_type": "default_layout",
         "device_modifications": [
             {
-                "device": "/dev/disk/by-id/FILL_IN",
+                "device": "/dev/disk/by-id/ata-SandDisk-SDSSDA120G_154593406196",
                 "partitions": [
                     {
                         "btrfs": [],
@@ -61,7 +61,7 @@
                                 "value": 512
                             },
                             "unit": "B",
-                            "value": 41873833984
+                            "value": 118925209600
                         },
                         "start": {
                             "sector_size": {
