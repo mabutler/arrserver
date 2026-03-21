@@ -40,7 +40,8 @@ EOF
 fi
 
 ALL_VARS="$REPO_DIR/ansible/inventory/group_vars/all.yml"
-SYNC_KEY_PATH=$(python3 -c "import yaml; print(yaml.safe_load(open('$ALL_VARS'))['sync_ssh_key_path'])" 2>/dev/null)
+SERVER_USER=$(python3 -c "import yaml; print(yaml.safe_load(open('$ALL_VARS'))['server_user'])" 2>/dev/null)
+SYNC_KEY_PATH="/home/${SERVER_USER}/.ssh/id_ed25519_sync"
 SYNC_REMOTE_HOST=$(python3 -c "import yaml; print(yaml.safe_load(open('$ALL_VARS'))['sync_remote_host'])" 2>/dev/null)
 SYNC_REMOTE_USER=$(python3 -c "import yaml; print(yaml.safe_load(open('$ALL_VARS'))['sync_remote_user'])" 2>/dev/null)
 
