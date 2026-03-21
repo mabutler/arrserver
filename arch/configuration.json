@@ -21,8 +21,7 @@
                         "btrfs": [],
                         "dev_path": null,
                         "flags": [
-                            "boot",
-                            "esp"
+                            "boot"
                         ],
                         "fs_type": "fat32",
                         "mount_options": [],
@@ -61,7 +60,7 @@
                                 "value": 512
                             },
                             "unit": "B",
-                            "value": 118925209600
+                            "value": 118958850048
                         },
                         "start": {
                             "sector_size": {
