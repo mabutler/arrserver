@@ -9,7 +9,11 @@ services:
     volumes:
       - /opt/arrconfig/sonarr:/config
       - /data/media:/data/media
-      - /mnt/seedbox:/mnt/seedbox
+      - type: bind
+        source: /mnt/seedbox
+        target: /mnt/seedbox
+        bind:
+          propagation: shared
     ports:
       - 8989:8989
     networks:
@@ -26,7 +30,11 @@ services:
     volumes:
       - /opt/arrconfig/radarr:/config
       - /data/media:/data/media
-      - /mnt/seedbox:/mnt/seedbox
+      - type: bind
+        source: /mnt/seedbox
+        target: /mnt/seedbox
+        bind:
+          propagation: shared
     ports:
       - 7878:7878
     networks:
