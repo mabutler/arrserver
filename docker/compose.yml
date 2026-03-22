@@ -9,7 +9,7 @@ services:
     volumes:
       - /opt/arrconfig/sonarr:/config
       - /data/media:/data/media
-      - /data/downloads:/data/downloads
+      - /mnt/seedbox:/mnt/seedbox
     ports:
       - 8989:8989
     networks:
@@ -26,7 +26,7 @@ services:
     volumes:
       - /opt/arrconfig/radarr:/config
       - /data/media:/data/media
-      - /data/downloads:/data/downloads
+      - /mnt/seedbox:/mnt/seedbox
     ports:
       - 7878:7878
     networks:
