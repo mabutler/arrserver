@@ -4,6 +4,11 @@
   become: true
 
   tasks:
+    - name: Install sshfs
+      community.general.pacman:
+        name: sshfs
+        state: present
+
     - name: Verify SSH key exists
       ansible.builtin.stat:
         path: "{{ sync_ssh_key_path }}"
@@ -29,23 +34,22 @@
       become_user: "{{ server_user }}"
       changed_when: false
 
-    - name: Deploy download-pull systemd service
+    - name: Create seedbox mount point
+      ansible.builtin.file:
+        path: /mnt/seedbox
+        state: directory
+        mode: "0755"
+
+    - name: Deploy seedbox systemd mount
       ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/download-pull.service.j2"
-        dest: /etc/systemd/system/download-pull.service
+        src: "{{ playbook_dir }}/../templates/mnt-seedbox.mount.j2"
+        dest: /etc/systemd/system/mnt-seedbox.mount
         mode: "0644"
       notify: Reload systemd
 
-    - name: Deploy download-pull systemd timer
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/download-pull.timer.j2"
-        dest: /etc/systemd/system/download-pull.timer
-        mode: "0644"
-      notify: Reload systemd
-
-    - name: Enable and start download-pull timer
+    - name: Enable and start seedbox mount
       ansible.builtin.systemd:
-        name: download-pull.timer
+        name: mnt-seedbox.mount
         enabled: true
         state: started
 

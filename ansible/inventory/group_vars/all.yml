@@ -13,7 +13,6 @@ base_packages:
 base_dirs:
   - /data
   - /data/media
-  - /data/downloads
 
 storage_drives:
   - uuid: "5e0af105-2f47-445c-8103-ee02324da865"
@@ -30,6 +29,4 @@ parity_drive:
 sync_remote_user: "unquote1581"
 sync_remote_host: "delia.usbx.me"
 sync_remote_downloads_dir: "downloads/qbittorrent/completed"   # path on remote where torrent client puts completed files
-sync_bwlimit_kbps: 3000                    # ~3 MB/s, leaves ~26 Mb/s headroom on a 50 Mb/s connection
-sync_interval: "5min"                      # time between sync runs (measured from when previous run finishes)
 sync_ssh_key_path: "/home/{{ server_user }}/.ssh/id_ed25519_sync"
