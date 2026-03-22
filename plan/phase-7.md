@@ -22,6 +22,14 @@ Reverse proxy so services are accessible via hostname rather than port number (e
 - Internal: self-signed cert or Tailscale's built-in HTTPS (`loki.tail*.ts.net`)
 - External: Let's Encrypt (only if services are exposed outside Tailscale)
 
+### Tdarr
+
+Monitors the media library and automatically re-encodes files based on configurable rules (e.g. convert x264 to x265, cap resolution at 1080p). Runs as a Docker container with a separate node agent that does the actual transcoding work.
+
+- Pairs with the arr stack — processes files after Sonarr/Radarr import them
+- Useful for normalizing quality and reducing library size over time
+- Transcoding is CPU-intensive — assess Vostro 260 performance before committing
+
 ## Planned deliverables
 
 - [ ] Add Nginx Proxy Manager to `docker/compose.yml`

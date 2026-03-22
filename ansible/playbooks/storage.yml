@@ -92,6 +92,13 @@
           -o allow_other,category.create=mfs,moveonenospc=1
       when: mergerfs_mounted.rc != 0
 
+    - name: Set ownership of /data to server user
+      ansible.builtin.file:
+        path: /data
+        owner: "{{ server_user }}"
+        group: "{{ server_user }}"
+        state: directory
+
     - name: Deploy mergerfs systemd service
       ansible.builtin.template:
         src: "{{ playbook_dir }}/../templates/mergerfs.service.j2"

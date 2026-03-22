@@ -29,20 +29,6 @@
       become_user: "{{ server_user }}"
       changed_when: false
 
-    - name: Deploy torrent-push systemd service
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/torrent-push.service.j2"
-        dest: /etc/systemd/system/torrent-push.service
-        mode: "0644"
-      notify: Reload systemd
-
-    - name: Deploy torrent-push systemd timer
-      ansible.builtin.template:
-        src: "{{ playbook_dir }}/../templates/torrent-push.timer.j2"
-        dest: /etc/systemd/system/torrent-push.timer
-        mode: "0644"
-      notify: Reload systemd
-
     - name: Deploy download-pull systemd service
       ansible.builtin.template:
         src: "{{ playbook_dir }}/../templates/download-pull.service.j2"
@@ -57,14 +43,11 @@
         mode: "0644"
       notify: Reload systemd
 
-    - name: Enable and start sync timers
+    - name: Enable and start download-pull timer
       ansible.builtin.systemd:
-        name: "{{ item }}"
+        name: download-pull.timer
         enabled: true
         state: started
-      loop:
-        - torrent-push.timer
-        - download-pull.timer
 
   handlers:
     - name: Reload systemd
