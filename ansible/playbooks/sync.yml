@@ -16,11 +16,18 @@
       failed_when: not ssh_key.stat.exists
       become: false
 
-    - name: Add remote host to known_hosts
+    - name: Add remote host to user known_hosts
       ansible.builtin.known_hosts:
         name: "{{ sync_remote_host }}"
         key: "{{ lookup('pipe', 'ssh-keyscan -H ' + sync_remote_host) }}"
         path: "/home/{{ server_user }}/.ssh/known_hosts"
+        state: present
+
+    - name: Add remote host to root known_hosts
+      ansible.builtin.known_hosts:
+        name: "{{ sync_remote_host }}"
+        key: "{{ lookup('pipe', 'ssh-keyscan -H ' + sync_remote_host) }}"
+        path: "/root/.ssh/known_hosts"
         state: present
 
     - name: Verify SSH connection to remote

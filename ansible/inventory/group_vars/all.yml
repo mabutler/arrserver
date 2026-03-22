@@ -2,6 +2,7 @@
 server_user: mbutler
 
 base_packages:
+  - less
   - rsync
   - smartmontools
   - tailscale
