@@ -7,7 +7,7 @@ Wants=network-online.target
 What={{ sync_remote_user }}@{{ sync_remote_host }}:{{ sync_remote_downloads_dir }}
 Where=/mnt/seedbox
 Type=fuse.sshfs
-Options=_netdev,reconnect,ServerAliveInterval=15,ServerAliveCountMax=3,IdentityFile={{ sync_ssh_key_path }},allow_other,StrictHostKeyChecking=yes,uid=1000,gid=1000,Compression=no,big_writes,Ciphers=aes128-gcm@openssh.com
+Options=_netdev,reconnect,ServerAliveInterval=15,ServerAliveCountMax=3,IdentityFile={{ sync_ssh_key_path }},allow_other,StrictHostKeyChecking=yes,uid=1000,gid=1000,Compression=no,Ciphers=aes128-gcm@openssh.com
 
 [Install]
 WantedBy=multi-user.target
